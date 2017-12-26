@@ -167,7 +167,8 @@ namespace Xmu.Crms.Services.Insomnia
             var usr = _db.UserInfo.Find(userId) ?? throw new UserNotFoundException();
             var cls = _db.ClassInfo.Find(classId) ?? throw new ClassNotFoundException();
             return _db.FixGroupMember.Include(m => m.Student).ThenInclude(u=>u.School).Include(m => m.FixGroup)
-                .ThenInclude(f => f.ClassInfo).Include(u=>u.FixGroup.Leader.School).Where(m => m.Student == usr && m.FixGroup.ClassInfo == cls)
+                .ThenInclude(f => f.ClassInfo).Include(u=>u.FixGroup.Leader).ThenInclude(u=>u.School)
+                .Where(m => m.Student.Id == userId && m.FixGroup.ClassInfo.Id == classId)
                 .Select(m => m.FixGroup).SingleOrDefault();
 
         }
