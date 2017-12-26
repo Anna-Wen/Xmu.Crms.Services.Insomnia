@@ -98,9 +98,12 @@ namespace Xmu.Crms.Services.Insomnia
             var members = _db.FixGroupMember.Include(f => f.FixGroup).ThenInclude(f => f.ClassInfo)
                 .Where(f => f.FixGroup.ClassInfo == cls);
             var fixGroups = members.Select(m => m.FixGroup).Distinct();
-            _db.FixGroupMember.RemoveRange(members);
-            _db.FixGroup.RemoveRange(fixGroups);
-            _db.SaveChanges();
+            if(fixGroups!=null)
+            {
+                _db.FixGroupMember.RemoveRange(members);
+                _db.FixGroup.RemoveRange(fixGroups);
+                _db.SaveChanges();
+            }
         }
 
         public void DeleteFixGroupByGroupId(long groupId)
