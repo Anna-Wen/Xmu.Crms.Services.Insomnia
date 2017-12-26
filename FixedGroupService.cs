@@ -73,7 +73,7 @@ namespace Xmu.Crms.Services.Insomnia
 
             var fixGroup = _db.FixGroup.Find(groupId) ?? throw new FixGroupNotFoundException();
             return _db.FixGroupMember.Include(f => f.FixGroup).Include(f => f.Student).Include(u=>u.Student.School)
-                .Where(f => f.FixGroup == fixGroup).Select(f => f.Student).ToList();
+                .Where(f => f.FixGroupId == groupId).Select(f => f.Student).ToList();
         }
 
         public IList<FixGroup> ListFixGroupByClassId(long classId)
@@ -163,8 +163,10 @@ namespace Xmu.Crms.Services.Insomnia
 
             var usr = _db.UserInfo.Find(userId) ?? throw new UserNotFoundException();
             var cls = _db.ClassInfo.Find(classId) ?? throw new ClassNotFoundException();
-            return _db.FixGroup.Include(m => m.Leader).ThenInclude(f=>f.School).Include(f => f.ClassInfo)
-                .Where(m => m.Id == userId && m.ClassInfo == cls).SingleOrDefault();
+            return _db.FixGroupMember.Include(m => m.Student).ThenInclude(u=>u.School).Include(m => m.FixGroup)
+                .ThenInclude(f => f.ClassInfo).Include(u=>u.FixGroup.Leader.School).Where(m => m.Student == usr && m.FixGroup.ClassInfo == cls)
+                .Select(m => m.FixGroup).SingleOrDefault();
+
         }
 
         public void FixedGroupToSeminarGroup(long semianrId, long fixedGroupId)
