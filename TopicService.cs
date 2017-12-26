@@ -87,5 +87,10 @@ namespace Xmu.Crms.Services.Insomnia
             _db.RemoveRange(ListTopicBySeminarId(seminarId));
             _db.SaveChanges();
         }
+
+        public int GetRestTopicById(long topicId, long classId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
