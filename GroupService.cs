@@ -420,6 +420,11 @@ namespace Xmu.Crms.Services.Insomnia
             _db.SaveChanges();
         }
 
+        public void DeleteSeminarGroupMemberById(long seminarGroupId, long userId)
+        {
+            throw new NotImplementedException();
+        }
+
         //bool ISeminarGroupService.DeleteSeminarGroupMemberBySeminarGroupId(long seminarGroupId)
         //{
         //    if (seminarGroupId < 0)

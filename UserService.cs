@@ -128,5 +128,10 @@ namespace Xmu.Crms.Services.Insomnia
         {
             return _db.Course.Include(c => c.Teacher).Where(c => c.Teacher.Name.StartsWith(teacherName)).ToList();
         }
+
+        public UserInfo GetUserByUserNumber(string userNumber)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
