@@ -64,7 +64,7 @@ namespace Xmu.Crms.Services.Insomnia
                 throw new ArgumentException();
             }
 
-            var group = _db.SeminarGroup.SingleOrDefault(s => s.Id == groupId);
+            var group = _db.SeminarGroup.Include(u=>u.Leader).SingleOrDefault(s => s.Id == groupId);
             if (group == null)
             {
                 throw new GroupNotFoundException();
@@ -307,14 +307,15 @@ namespace Xmu.Crms.Services.Insomnia
             }
 
             var seminarmember = _db.SeminarGroupMember.Include(s => s.Student).Include(s => s.SeminarGroup)
-                .ThenInclude(sem => sem.Seminar).Where(s => s.Student == user)
-                .SingleOrDefault(sg => sg.SeminarGroup.Seminar == seminar);
-            if (seminarmember == null)
+                .ThenInclude(sem => sem.Seminar).Include(u=>u.SeminarGroup.Leader).Where(s => s.StudentId == userId)
+                .SingleOrDefault(sg => sg.SeminarGroup.SeminarId == seminarId);
+            if (seminarmember != null)
             {
-                throw new InvalidOperationException();
+                return seminarmember.SeminarGroup;
             }
+            return null;
 
-            return seminarmember.SeminarGroup;
+            
         }
 
         public IList<SeminarGroup> ListGroupByTopicId(long topicId)
