@@ -50,6 +50,19 @@ namespace Xmu.Crms.Services.Insomnia
                 throw new PhoneAlreadyExistsException();
             }
 
+            // 找数据库中是否存在该学生Number的对应表项
+            if (_db.UserInfo.Any(u => u.Number == user.Number))
+            {
+                UserInfo userInfo = _db.UserInfo.SingleOrDefault(u => u.Number == user.Number);
+                _db.UserInfo.Attach(userInfo);
+                userInfo.Phone = user.Phone;
+                userInfo.Password = user.Password;
+                _db.SaveChanges();
+
+                return userInfo;
+            }
+
+            // 否则就是未绑定状态
             user.Type = Type.Unbinded;
 
             var entry = _db.UserInfo.Add(user);
